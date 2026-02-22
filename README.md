@@ -1,7 +1,12 @@
 # Virtualization Exit Strategy Framework
-### Planning ecosystem migration without operational risk.
+### Control Plane Transition Model
 
-> **Architecture Principle:** Migration is not a platform change. It is a dependency transition.
+![Status](https://img.shields.io/badge/status-architectural--framework-blue)
+
+> Migration is a control-plane transition.  
+> Compute is the last layer you should move.
+
+---
 
 ## 📚 Canonical Architecture Reference  
 This repository contains the working model and decision artifacts for ecosystem transitions post-Broadcom.
@@ -10,34 +15,73 @@ This repository contains the working model and decision artifacts for ecosystem 
 
 ---
 
-## Why Migrations Fail
-Most failures **occur because** organizations treat hypervisors as static infrastructure instead of active control planes. When you migrate, you are not just moving a VM; you are breaking API integrations.
+## Problem Statement
 
-| Assumption | Reality |
-| :--- | :--- |
-| **VMs are portable** | Operations are not portable |
-| **Storage is compatible** | Tooling is not compatible |
-| **Same DR logic** | Different recovery semantics |
+Platform transitions (e.g., VMware → Nutanix / Hyper-V) frequently introduce operational regression because migrations are executed at the compute layer while control-plane dependencies remain tightly coupled.
 
-## The "Dependency-First" Migration Sequence
-To prevent a "Recovery Gap," the architectural consequence of a platform shift must be handled in this specific order. Compute is the *last* thing you move.
-
-1. **Operational Independence:** Decouple monitoring from the hypervisor layer (e.g., migrating away from vRealize/Aria dependencies).
-2. **Backup Independence:** Ensure restore capability exists outside the source and target control planes.
-3. **Identity Independence:** Centralize RBAC before moving compute.
-4. **Compute Migration:** The actual "move" of the VM is the final, lowest-risk step.
-
-## Risk & Mitigation Model
-
-| Risk | Mitigation Strategy |
-| :--- | :--- |
-| **Vendor Lock-in** | Abstract operations through vendor-agnostic infrastructure-as-code (Terraform/OpenTofu). |
-| **Tooling Loss** | Run parallel management planes during the transition phase. |
-| **Recovery Gap** | Implement independent, off-site DR *before* the first move. |
-| **Downtime** | Utilize incremental data seeding via storage-level replication (e.g., Nutanix Move). |
-
-## Summary
-You are exiting an ecosystem, not just a hypervisor. If you do not plan for the loss of specialized APIs (vMotion, DRS, VADP), your migration **results in** a permanent operational regression.
+This framework models migration as a dependency graph — not a VM move.
 
 ---
-**Star this repo if you’re planning a platform transition.** *Architectural frameworks maintained by [Rack2Cloud](https://www.rack2cloud.com)*
+
+## System Model
+
+![Dependency-First Migration Model](https://www.rack2cloud.com/wp-content/uploads/2026/02/diagram-control-plane-stack.jpg)
+
+**Layer Order (Top → Bottom):**
+
+1. Identity / RBAC
+2. Backup & DR
+3. Monitoring & Automation
+4. Compute & Storage
+
+Migration must proceed in reverse order.
+
+---
+
+## Failure Mode
+
+If compute moves before authority layers:
+
+- Recovery gaps emerge
+- Backup APIs break
+- IAM policies mismatch
+- Operational tooling fragments
+
+---
+
+## Migration Phases
+
+| Phase | Objective |
+| :--- | :--- |
+| **1** | Operational independence |
+| **2** | Backup independence |
+| **3** | Identity abstraction |
+| **4** | Compute relocation |
+
+---
+
+## Decision Matrix
+
+| Environment | Recommended |
+| :--- | :--- |
+| **Enterprise DR dependency** | ✅ Required |
+| **Greenfield build** | ⚠️ Optional |
+| **Lab environment** | ❌ Not critical |
+
+---
+
+## Non-Goals
+
+- Product comparison
+- Vendor endorsement
+- Feature benchmarking
+
+*This is a control-plane architecture model.*
+
+---
+
+## Support
+
+If this framework clarified your transition strategy, please star the repository. 
+
+Architectural frameworks maintained by **[Rack2Cloud](https://www.rack2cloud.com)**.
