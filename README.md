@@ -13,9 +13,22 @@ This repository contains the working models, decision artifacts, and blast-radiu
 **Want the full risk-deterministic migration framework and SE whiteboard artifacts?** 👉 [Download the formatted PDF Playbook here](https://www.rack2cloud.com/architecture-failure-playbooks/)
 
 **The continuously maintained architectural specifications live here:**
+
 1. **The Strategic Blueprint:** [Broadcom Exit Strategy: The Post-Broadcom Migration Architecture](https://www.rack2cloud.com/post-broadcom-migration-architecture)
 2. **The Execution Reality:** [The Architecture of Migration: Licensing Isn't the Real Risk](https://www.rack2cloud.com/architecture-of-migration-licensing-risk/)
 3. **The Data Physics:** [Sizing for the CVM: The HCI Controller Tax](https://www.rack2cloud.com/cvm-tax-nutanix-ahv-performance/)
+
+---
+
+**Post-Broadcom Migration Series — Field Engineering Sequence:**
+
+| Part | Title | Layer | Status |
+| :--- | :--- | :--- | :--- |
+| **Part 01** | [Beyond the VMDK: Translating Execution Physics](https://www.rack2cloud.com/beyond-the-vmdk-translating-execution-physics-esxi-ahv/) | Execution Physics | ✅ Live |
+| **Part 02** | [The Controller Tax: Modeling Hyperconverged Resource Contention](https://www.rack2cloud.com/the-controller-tax-modeling-hyperconverged-resource-contention/) | Resource Contention | ✅ Live |
+| **Part 03** | Migration Stutter: Handling High-I/O Cutovers Without Data Loss | High-I/O Cutover | 🔜 Up Next |
+| **Part 04** | Policy Translation: Mapping VMware DRS & SRM to Flow | Policy Translation | 🔒 Locked |
+| **Part 05** | Upgrade Physics: Designing for Rolling Maintenance | Validation | 🔒 Locked |
 
 ---
 
