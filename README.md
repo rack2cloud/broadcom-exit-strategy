@@ -25,10 +25,11 @@ This repository contains the working models, decision artifacts, and blast-radiu
 | Part | Title | Layer | Status |
 | :--- | :--- | :--- | :--- |
 | **Part 01** | [Beyond the VMDK: Translating Execution Physics](https://www.rack2cloud.com/beyond-the-vmdk-translating-execution-physics-esxi-ahv/) | Execution Physics | ✅ Live |
-| **Part 02** | [The Controller Tax: Modeling Hyperconverged Resource Contention](https://www.rack2cloud.com/the-controller-tax-modeling-hyperconverged-resource-contention/) | Resource Contention | ✅ Live |
-| **Part 03** | Migration Stutter: Handling High-I/O Cutovers Without Data Loss | High-I/O Cutover | 🔜 Up Next |
-| **Part 04** | Policy Translation: Mapping VMware DRS & SRM to Flow | Policy Translation | 🔒 Locked |
-| **Part 05** | Upgrade Physics: Designing for Rolling Maintenance | Validation | 🔒 Locked |
+| **Part 02** | [The Controller Tax: Modeling Hyperconverged Resource Contention](https://www.rack2cloud.com/controller-tax-hyperconverged-resource-contention/) | Resource Contention | ✅ Live |
+| **Part 03** | [Migration Stutter: Solving High-I/O Cutovers Without Data Loss](https://www.rack2cloud.com/migration-stutter-high-io-cutover/) | High-I/O Cutover | ✅ Live |
+| **Part 04** | [Policy Translation: Mapping VMware DRS, SRM & NSX to Flow](https://www.rack2cloud.com/vmware-policy-migration-drs-srm-nsx-flow/) | Policy Translation | ✅ Live |
+| **Part 05** | [Upgrade Physics: Designing for Rolling Maintenance on AHV](https://www.rack2cloud.com/upgrade-physics-rolling-maintenance-ahv/) | Validation & Ops | ✅ Live |
+```
 
 ---
 
