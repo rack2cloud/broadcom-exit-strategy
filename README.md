@@ -155,4 +155,4 @@ This repository is maintained against the Rack2Cloud [Canonical Architecture Spe
 ---
 
 *Last updated: 2026-06-30*
-*Maintained by Rack2Cloud — [rack2cloud.com](https://www.rack2cloud.com)*
+*Maintained by [Rack2Cloud](https://www.rack2cloud.com)*
