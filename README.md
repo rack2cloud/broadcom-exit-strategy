@@ -6,104 +6,153 @@
 > **Architecture Principle:** Migration is a control-plane and execution-physics transition. Relocating the VMDK is the absolute last layer you should move. 
 
 ---
+## About This Repository
 
-## 📚 Canonical Architecture References  
-This repository contains the working models, decision artifacts, and blast-radius maps for ecosystem transitions post-Broadcom.
+This repository consolidates the Rack2Cloud research on VMware and Broadcom exit strategy into a structured reference for architects and platform teams.
 
-**Want the full risk-deterministic migration framework and SE whiteboard artifacts?** 👉 [Download the formatted PDF Playbook here](https://www.rack2cloud.com/architecture-failure-playbooks/)
+The Broadcom acquisition of VMware in 2023 forced a re-evaluation of enterprise virtualization strategy across the industry. This repository tracks the architectural dimensions of that transition: licensing economics, platform decision frameworks, migration mechanics, operational continuity, and post-exit failure modes.
 
-**The continuously maintained architectural specifications live here:**
-
-1. **The Strategic Blueprint:** [Broadcom Exit Strategy: The Post-Broadcom Migration Architecture](https://www.rack2cloud.com/post-broadcom-migration-architecture)
-2. **The Execution Reality:** [The Architecture of Migration: Licensing Isn't the Real Risk](https://www.rack2cloud.com/architecture-of-migration-licensing-risk/)
-3. **The Data Physics:** [Sizing for the CVM: The HCI Controller Tax](https://www.rack2cloud.com/cvm-tax-nutanix-ahv-performance/)
+The intended audience is architects, platform engineers, and technical leadership responsible for evaluating or executing a VMware exit.
 
 ---
 
-**Post-Broadcom Migration Series — Field Engineering Sequence:**
+## Framework Structure
 
-| Part | Title | Layer | Status |
-| :--- | :--- | :--- | :--- |
-| **Part 01** | [Beyond the VMDK: Translating Execution Physics](https://www.rack2cloud.com/beyond-the-vmdk-translating-execution-physics-esxi-ahv/) | Execution Physics | ✅ Live |
-| **Part 02** | [The Controller Tax: Modeling Hyperconverged Resource Contention](https://www.rack2cloud.com/controller-tax-hyperconverged-resource-contention/) | Resource Contention | ✅ Live |
-| **Part 03** | [Migration Stutter: Solving High-I/O Cutovers Without Data Loss](https://www.rack2cloud.com/migration-stutter-high-io-cutover/) | High-I/O Cutover | ✅ Live |
-| **Part 04** | [Policy Translation: Mapping VMware DRS, SRM & NSX to Flow](https://www.rack2cloud.com/vmware-policy-migration-drs-srm-nsx-flow/) | Policy Translation | ✅ Live |
-| **Part 05** | [Upgrade Physics: Designing for Rolling Maintenance on AHV](https://www.rack2cloud.com/upgrade-physics-rolling-maintenance-ahv/) | Validation & Ops | ✅ Live |
-```
+### Exit Decision Framework
 
----
+Evaluate whether, when, and how to exit VMware.
 
-## Problem Statement
+**Foundation**
 
-Platform transitions (e.g., VMware → Nutanix AHV / Sovereign KVM) frequently result in catastrophic Day 2 operational and performance regressions because engineers execute migrations as simple "VM moves." 
+- [The Broadcom Exit Strategy](https://www.rack2cloud.com/post-broadcom-migration-architecture/) — The strategic framing for post-Broadcom architecture decisions.
+- [Broadcom Year Two: The Stay or Go Architecture Guide](https://www.rack2cloud.com/broadcom-vmware-fallout-year-two-strategy/) — 2026 decision framework for organizations still evaluating exit timing.
+- [The Architecture of Migration: Why Licensing Isn't Your Biggest Risk](https://www.rack2cloud.com/architecture-of-migration-licensing-risk/) — Risk decomposition beyond licensing.
 
-This ignores two critical system anchors:
-1. **Control-Plane Coupling:** Dependencies on backup APIs, IAM, and monitoring remain tightly coupled to the legacy ESXi hypervisor.
-2. **Execution Physics:** Moving from a centralized SAN to a distributed Hyperconverged Infrastructure (HCI) turns the Top-of-Rack switches into the storage backplane. If you do not account for the CVM tax and scheduler rules, you will encounter "Migration Stutter."
+**Legal and Commercial Context**
 
-This framework models migration as a dependency graph and an execution translation—not a compute relocation.
+- [The Broadcom Legal Playbook: Why the VMware Lawsuits Are Accelerating Enterprise Exit Timelines](https://www.rack2cloud.com/broadcom-vmware-lawsuit-legal-playbook/) — Legal pressure as an architectural accelerant.
+- [VMware Licensing Costs: Why Most Estimates Are Wrong](https://www.rack2cloud.com/vmware-licensing-costs-estimate/) — Cost estimation failures and how to correct them.
+- [March 31 Isn't a Deadline. It's a Forced Architecture Decision.](https://www.rack2cloud.com/vmware-vcsp-termination-architecture-decision/) — VCSP termination as an architectural event (March 2026, now completed).
 
 ---
 
-## System Model
+### Platform Evaluation
 
-![Dependency-First Migration Model](https://www.rack2cloud.com/wp-content/uploads/2026/02/diagram-control-plane-stack.jpg)
+Compare alternative platforms against VMware across relevant architectural dimensions.
 
-**The Dependency Layer Order (Top → Bottom):**
-1. **Identity / RBAC** (Who can authorize)
-2. **Backup & DR** (How we survive failure)
-3. **Monitoring & Automation** (How we observe state)
-4. **Storage & Network Fabric** (Where the data lives and transits)
-5. **Compute / VMDK** (Where the CPU executes)
+**Decision Frameworks**
 
-*Migration must proceed in reverse order of compute dependencies (Top to Bottom).*
+- [Nutanix vs VMware: The Post-Broadcom Decision Framework (2026)](https://www.rack2cloud.com/nutanix-vs-vmware-post-broadcom-decision-framework/) — Structured platform comparison for the post-Broadcom environment.
+- [Proxmox vs Nutanix vs VMware: The Post-Broadcom Constraints No One Explains](https://www.rack2cloud.com/proxmox-vs-nutanix-vs-vmware-post-broadcom/) — Three-platform constraint analysis.
+- [Proxmox Isn't Replacing VMware. It's Replacing Assumptions.](https://www.rack2cloud.com/proxmox-migration-assumptions/) — Why Proxmox evaluations fail when assumptions aren't surfaced first. *(Added 2026-06-30)*
+- [Azure VMware Solution vs Native Azure: Architecture Trade-offs, Costs, and Exit Risk](https://www.rack2cloud.com/azure-vmware-solution-vs-native-azure/) — Cloud exit path decision framework for Azure environments.
 
----
+**Operating Model Considerations**
 
-## Failure Signatures
-
-If compute moves before the foundation layers are abstracted:
-- **The API Break:** Recovery gaps emerge because backup controllers cannot talk to the new hypervisor APIs (e.g., missing vCenter hooks).
-- **The Migration Stutter:** I/O spikes during replication/rebuilds saturate the East-West network switches, causing P99 tail latency to stall databases because the new HCI controller tax was ignored.
-- **The IAM Mismatch:** Operational tooling fragments because RBAC policies do not translate 1:1 between vCenter and Prism/KVM.
+- [The Hypervisor Is Not the Migration Target — The Operating Model Is](https://www.rack2cloud.com/virtualization-operating-model-migration/) — Why platform selection is the wrong starting point for exit planning. *(Added 2026-06-30)*
+- [The VMware Exit Has Entered the Coexistence Era](https://www.rack2cloud.com/vmware-coexistence-era/) — Current state of exit timelines and coexistence patterns.
 
 ---
 
-## Migration Phases
+### Pre-Migration Assessment
 
-| Phase | Objective | Execution |
-| :--- | :--- | :--- |
-| **Phase 1** | Operational Independence | Decouple monitoring, logging, and metrics from legacy VMware-specific tooling. |
-| **Phase 2** | Backup Independence | Establish storage-agnostic snapshot and replication paths. |
-| **Phase 3** | Identity Abstraction | Map AD/Entra groups to the new platform RBAC model (e.g., Nutanix Flow). |
-| **Phase 4** | Storage I/O Modeling | Calculate write amplification, the CVM Controller Tax, and network buffer requirements. |
-| **Phase 5** | Compute Relocation | Cutover the CPU/RAM execution state. |
+Assess readiness, dependencies, and risk before migration begins.
 
----
+**Assessment Framework**
 
-## Decision Matrix
+- [VMware Migration Strategy](https://www.rack2cloud.com/modern-virtualization-learning-path/vmware-migration-strategy/) — Strategic migration framework.
+- [VMware Licensing Pressure Created a Dependency Audit Problem](https://www.rack2cloud.com/vmware-dependency-audit/) — How licensing pressure created undiscovered dependency exposure. *(Added 2026-06-30)*
+- [The Skills Gap Is the Real VMware Exit Risk](https://www.rack2cloud.com/vmware-skills-gap/) — Skills and operational readiness as exit risk factors beyond licensing and platform.
 
-| Environment | Control-Plane Abstraction | I/O Performance Modeling |
-| :--- | :--- | :--- |
-| **Enterprise Production (Monolithic DBs)** | ✅ Mandatory | ✅ Mandatory (Focus: Data Locality & CVM Overhead) |
-| **Enterprise Production (Scale-out/Microservices)** | ✅ Mandatory | ✅ Mandatory (Focus: Network Throughput) |
-| **Greenfield / Dev Environments** | ⚠️ Optional | ⚠️ Optional |
-| **Lab Environments** | ❌ Not Critical | ❌ Not Critical |
+**Assessment Tools**
+
+- [VMware Migration Readiness Assessment](https://www.rack2cloud.com/audits/migration-readiness-assessment/) — Structured pre-migration readiness audit.
+- [VMware Licensing Cost Model](https://www.rack2cloud.com/vmware-licensing-cost-model/) — Licensing cost modeling tool.
+- [VMware to HCI Migration Advisor](https://www.rack2cloud.com/vmware-to-hci-migration-advisor/) — Migration path decision support tool.
 
 ---
 
-## Non-Goals
+### Migration Architecture and Execution
 
-- Product comparisons (UI/UX)
-- Vendor endorsements
-- Synthetic feature benchmarking
+Design and execute the migration with architectural rigor.
 
-*This is a strict control-plane and execution-physics architecture model.*
+**Migration Architecture**
+
+- [Nutanix vs VMware: Availability vs Authority in the Post-Broadcom Datacenter (2026)](https://www.rack2cloud.com/nutanix-vs-vmware-availability-authority/) — Availability and authority as migration design constraints.
+- [Performance Modeling the VMware Evacuation: Nutanix AHV vs Proxmox Ceph Storage I/O Reality](https://www.rack2cloud.com/vmware-exit-performance-modeling-ahv-vs-ceph/) — Storage I/O performance modeling for migration planning.
+- [The Dashboard Said the Migration Succeeded](https://www.rack2cloud.com/migration-dashboard-failure/) — Why migration validation fails and what to measure instead.
+
+**Execution Patterns**
+
+- [vSphere to AHV Migration Strategy: A Risk-Deterministic Framework for Legacy Workloads](https://www.rack2cloud.com/vsphere-to-ahv-migration-strategy/) — Risk-deterministic framework for legacy workload migration.
+- [From vSphere to Nutanix AHV: The Deterministic Migration Checklist to Avoid the 99% Hang](https://www.rack2cloud.com/vsphere-to-nutanix-ahv-migration-checklist/) — Field checklist for AHV migration execution.
+- [Migration Stutter: Handling High-I/O Cutovers Without Data Loss](https://www.rack2cloud.com/migration-stutter-high-io-cutover/) — High-I/O cutover design.
+- [The Nutanix Migration Stutter: Why AHV Cutovers Freeze High-IO Workloads](https://www.rack2cloud.com/nutanix-migration-stutter-ahv-fix/) — AHV-specific cutover failure analysis.
 
 ---
 
-## Support
+### Post-Exit Operations and Risk
 
-If this framework clarified your transition strategy and prevented a Day 2 outage, please star the repository. 
+Understand what breaks after the migration and how to design for survivability.
 
-Architectural frameworks maintained by **[Rack2Cloud](https://www.rack2cloud.com)**.
+**The Strategic Blueprint:** [Broadcom Exit Strategy: The Post-Broadcom Migration Architecture](https://www.rack2cloud.com/post-broadcom-migration-architecture)
+
+**Post-Exit Failure Modes**
+
+- [Your VMware Exit Was Successful. The First Incident Will Tell You If That's True.](https://www.rack2cloud.com/vmware-exit-survivability/) — Post-exit operational survivability under real incident conditions. *(Added 2026-06-30)*
+- [What Breaks First After You Leave VMware](https://www.rack2cloud.com/post-vmware-migration-what-breaks/) — Inventory of post-exit failure modes by category. *(Added 2026-06-30)*
+
+**Operational Architecture**
+
+- [Nutanix AHV Day-2 Operations: The Architectural Reality](https://www.rack2cloud.com/nutanix-ahv-day-2-deep-dive-operations/) — Day-2 operational requirements on AHV post-migration.
+- [Nutanix AHV Operations: What Changes After VMware Migration](https://www.rack2cloud.com/nutanix-ahv-operations-after-vmware/) — Operational change inventory for teams transitioning to AHV.
+- [Upgrade Physics: Designing for Rolling Maintenance Without Stopping Production](https://www.rack2cloud.com/upgrade-physics-rolling-maintenance-ahv/) — Maintenance architecture for post-migration environments.
+
+---
+
+### Architecture Reference
+
+Supporting architecture content for post-Broadcom infrastructure decisions.
+
+**Virtualization Architecture**
+
+- [Beyond the VMDK: Translating Execution Physics from ESXi to AHV](https://www.rack2cloud.com/beyond-the-vmdk-translating-execution-physics-esxi-ahv/) — Execution physics translation from ESXi to AHV.
+- [The CVM Tax: How Mis-Sized Controller VMs Quietly Kill AHV Performance](https://www.rack2cloud.com/cvm-tax-nutanix-ahv-performance/) — AHV controller VM sizing as a post-migration performance constraint.
+- [CPU Ready vs. CPU Wait: Why Your Cluster Looks Fine but Feels Slow](https://www.rack2cloud.com/cpu-ready-vs-cpu-wait-why-your-cluster-looks-fine-but-feels-slow/) — Performance modeling for post-migration cluster health.
+
+**Kubernetes as Exit Path**
+
+- [Kubernetes as the VMware Exit Ramp: How Platform Teams Are Reducing VMware Dependence](https://www.rack2cloud.com/kubernetes-vmware-exit-ramp/) — Kubernetes as a parallel exit path.
+
+---
+
+## Canonical Architecture Learning Path
+
+The [Virtualization Architecture Path](https://www.rack2cloud.com/modern-virtualization-learning-path/) provides the structured learning context for this repository's content.
+
+Relevant modules:
+
+- [VMware Migration Strategy](https://www.rack2cloud.com/modern-virtualization-learning-path/vmware-migration-strategy/)
+- [Virtualization Control Plane Architecture](https://www.rack2cloud.com/modern-virtualization-learning-path/virtualization-control-plane-architecture/)
+- [Virtualization Deterministic Operations](https://www.rack2cloud.com/modern-virtualization-learning-path/virtualization-deterministic-operations/)
+- [Virtualization Foundations](https://www.rack2cloud.com/modern-virtualization-learning-path/virtualization-foundations/)
+
+---
+
+## Architecture Audits and Assessments
+
+Structured assessment paths for teams in active exit planning:
+
+- [VMware Migration Readiness Assessment](https://www.rack2cloud.com/audits/migration-readiness-assessment/) — Pre-migration structured assessment.
+- [Architecture Audit Services](https://www.rack2cloud.com/audits/) — Full audit service catalog.
+
+---
+
+## Maintenance Notes
+
+This repository is maintained against the Rack2Cloud [Canonical Architecture Specifications](https://www.rack2cloud.com/canonical-architecture-specifications/) governance system.
+
+---
+
+*Last updated: 2026-06-30*
+*Maintained by Rack2Cloud — [rack2cloud.com](https://www.rack2cloud.com)*
