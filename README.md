@@ -158,5 +158,4 @@ This repository is maintained against the Rack2Cloud [Canonical Architecture Spe
 
 If this framework clarified your transition strategy and prevented a Day 2 outage, please star the repository. 
 
-*Last updated: 06-30-2026*
-*Maintained by [Rack2Cloud](https://www.rack2cloud.com)*
+Architectural frameworks maintained by [Rack2Cloud](https://www.rack2cloud.com)
